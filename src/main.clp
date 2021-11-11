@@ -1,3 +1,45 @@
+;; mainprogram, flag ;; van
+(defrule startProgram
+    ?o <- (closed 0 0)
+    =>
+    (assert (opened 0 0))
+    (assert (status program))
+    (assert (flag-pasien 0))
+    (retract ?o)
+)
+
+(defrule true-cancer
+    (flag-pasien ?n) 1
+    ?s <- (status program)
+    =>
+    (retract ?s)
+    (assert (status true)))
+
+
+(defrule false-cancer
+    (flag-pasien ?n) 0
+    ?s <- (status program)
+    =>
+    (retract ?s)
+    (assert (status false)))
+
+(defrule startDetect
+    (radius_mean ?input_radius_mean)
+    =>
+    if (> 0.05 ( input_radius_mean)) then 
+        (detect_perimeter_worst)
+    else
+        (detect_radius_worst)
+)
+
+(defrule detect_perimeter_worst
+    (perimeter_worst ?input_perimeter_worst)
+    => 
+    if (> 114.45 ( input_perimeter_worst )) then
+        (false-cancer)
+    else
+        (detect_texture_worst)
+)
 
 ;; input data oleh pengguna ;; van
 (defrule inputdata
