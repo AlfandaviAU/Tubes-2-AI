@@ -1,173 +1,272 @@
-;; mainprogram, flag ;; van
-(defrule startProgram
-    ?o <- (closed 0 0)
-    =>
-    (assert (opened 0 0))
-    (assert (status program))
-    (assert (flag-pasien 0))
-    (retract ?o)
-)
+; BAGIAN ASK
 
-(defrule true-cancer
-    (flag-pasien ?n) 1
-    ?s <- (status program)
-    =>
-    (retract ?s)
-    (assert (status true)))
-
-
-(defrule false-cancer
-    (flag-pasien ?n) 0
-    ?s <- (status program)
-    =>
-    (retract ?s)
-    (assert (status false)))
-
-(defrule startDetect
-    (radius_mean ?input_radius_mean)
-    =>
-    if (> 0.05 ( input_radius_mean)) then 
-        (detect_perimeter_worst)
-    else
-        (detect_radius_worst)
-)
-
-(defrule detect_perimeter_worst
-    (perimeter_worst ?input_perimeter_worst)
-    => 
-    if (> 114.45 ( input_perimeter_worst )) then
-        (false-cancer)
-    else
-        (detect_texture_worst)
-)
-
-;; input data oleh pengguna ;; van
-(defrule inputdata
+(defrule ask_concave_points_mean
 =>
-    (printout t "radius_mean? ")
-    (bind ?input_radius_mean(readline))
+    (printout t "mean_concave points? ")
+    (assert(concave_points_mean (read)))
+)
+(defrule ask_radius_mean
+    (radius_mean)
+=>
+    (printout t "mean_radius? ")
+    (assert (radius_mean (read)))
+)
+(defrule ask_texture_worst
+    (texture_worst)
+=>
+    (printout t "worst_texture? ")
+    (assert (texture_worst (read)))
+)
+(defrule ask_radius_worst
+    (radius_worst)
+=>
+    (printout t "worst_radius? ")
+    (assert(radius_worst (read)))
+)
 
+(defrule ask_radius_error
+    (radius_error)
+=>
+    (printout t "radius_error? ")
+    (assert(radius_error (read)))
+)
+
+(defrule ask_texture_mean
+    (texture_mean)
+=>
     (printout t "texture_mean? ")
-    (bind ?input_texture_mean (readline))
+    (assert(texture_mean (read)))
+)
 
-    (printout t "perimeter_mean? ")
-    (bind ?input_perimeter_mean (readline))
+(defrule ask_concave_point_error
+    (concave_point_error)
+=>
+    (printout t "concave_point_error? ")
+    (assert(concave_point_error (read)))
+)
 
-    (printout t "area_mean? ")
-    (bind ?input_area_mean (readline))
-
+(defrule ask_smoothness_mean
+    (smoothness_mean)
+=>
     (printout t "smoothness_mean? ")
-    (bind ?input_smoothness_mean(readline))
-    
-    (printout t "compactness_mean? ")
-    (bind ?input_compactness_mean (readline))
+    (assert(smoothness_mean (read)))
+)
 
-    (printout t "concavity_mean? ")
-    (bind ?input_concavity_mean (readline))
-
-    (printout t "concave points_mean? ")
-    (bind ?input_concave points_mean (readline))
-
-    (printout t "symmetry_mean? ")
-    (bind ?input_symmetry_mean (readline))
-
-    (printout t "fractal_dimension_mean? ")
-    (bind ?input_fractal_dimension_mean (readline))
-
-    (printout t "radius_se? ")
-    (bind ?input_radius_se (readline))
-
-    (printout t "texture_se? ")
-    (bind ?input_texture_se (readline))
-
-    (printout t "perimeter_se? ")
-    (bind ?input_perimeter_se (readline))
-
-    (printout t "texture_se? ")
-    (bind ?input_texture_se (readline))
-
-    (printout t "smoothness_se? ")
-    (bind ?input_smoothness_se (readline))
-
-    (printout t "area_se? ")
-    (bind ?input_area_se (readline))
-
-    (printout t "compactness_se? ")
-    (bind ?input_compactness_se (readline))
-
-    (printout t "concavity_se? ")
-    (bind ?input_concavity_se (readline))
-
-    (printout t "concave_points_se? ")
-    (bind ?input_concave_points_se (readline))
-
-    (printout t "symmetry_se? ")
-    (bind ?input_symmetry_se (readline))
-
-    (printout t "fractal_dimension_se? ")
-    (bind ?input_fractal_dimension_se (readline))
-
-    (printout t "radius_worst? ")
-    (bind ?input_radius_worst (readline))
-
-    (printout t "texture_worst? ")
-    (bind ?input_texture_worst (readline))
-
-    (printout t "perimeter_worst? ")
-    (bind ?input_perimeter_worst (readline))
-
+(defrule ask_area_worst
+    (area_worst)
+=>
     (printout t "area_worst? ")
-    (bind ?input_area_worst (readline))
+    (assert(area_worst (read)))
+)
+(defrule ask_perimeter_worst
+    (perimeter_worst)
+=>
+    (printout t "worst_perimeter? ")
+    (assert(worst_perimeter (read)))
+)
 
-    (printout t "smoothness_worst? ")
-    (bind ?input_smoothness_worst (readline))
+(defrule ask_concave_points_worst
+    (concave_point_worst)
+=>
+    (printout t "worst_concave_points? ")
+    (assert(concave_points_worst (read)))
+)
 
-    (printout t "compactness_worst? ")
-    (bind ?input_compactness_worst (readline))
+(defrule ask_perimeter_error
+    (perimeter_error)
+=>
+    (printout t "perimeter_error? ")
+    (assert(perimeter_error (read)))
+)
 
-    (printout t "concavity_worst? ")
-    (bind ?input_concavity_worst (readline))
-
-    (printout t "concave_points_worst? ")
-    (bind ?input_concave_points_worst (readline))
-
-    (printout t "symmetry_worst? ")
-    (bind ?input_symmetry_worst (readline))
-
-    (printout t "fractal_dimension_worst ")
-    (bind ?input_fractal_dimension_worst (readline))
-
-    (assert 	
-            (radius_mean ?input_radius_mean)
-            (texture_mean ?input_texture_mean)
-            (perimeter_mean ?input_perimeter_mean)
-            (area_mean ?input_area_mean)
-            (smoothness_mean ?input_smoothness_mean)
-            (compactness_mean ?input_compactness_mean)
-            (concavity_mean ?input_concavity_mean)
-            (concave points_mean ?input_concave points_mean)
-            (symmetry_mean ?input_symmetry_mean)
-            (fractal_dimension_mean ?input_fractal_dimension_mean)
-            (radius_se ?input_radius_se)
-            (texture_se ?input_texture_se)
-            (perimeter_se ?input_perimeter_se)
-            (smoothness_se ?input_smoothness_se)
-            (area_se ?input_area_se)
-            (compactness_se ?input_compactness_se)
-            (concavity_se ?input_concavity_se)
-            (concave_points_se ?input_concave_points_se)
-            (symmetry_se ?input_symmetry_se)
-            (fractal_dimension_se ?input_fractal_dimension_se)
-            (radius_worst ?input_radius_worst)
-            (texture_worst ?input_texture_worst)
-            (perimeter_worst ?input_perimeter_worst)
-            (area_worst ?input_area_worst)
-            (smoothness_worst ?input_smoothness_worst)
-            (compactness_worst ?input_compactness_worst)
-            (concavity_worst ?input_concavity_worst)
-            (concave_points_worst ?input_concave_points_worst)
-            (symmetry_worst ?input_symmetry_worst)
-            (fractal_dimension_worst ?input_fractal_dimension_worst)
+; BAGIAN PROCESS
+(defrule process_concave_points_mean
+    (concave_points_mean ?x)
+=>
+    (if (<= ?x 0.05)
+        then
+        (assert (radius_worst))
+        (assert (left_branch))
+        else
+        (assert (perimeter_worst))
+        (assert (right_branch))
     )
+)
 
+(defrule process_radius_worst
+    (radius_worst ?x)
+=>
+    (if (<= ?x 16.83)
+        then
+        (assert (radius_error))
+        (assert (left_texture))
+        else
+        (assert (texture_mean))
+        (assert (right_texture))
+    )
+)
+
+(defrule process_right_texture_mean
+    (texture_mean ?x)
+    (right_texture)
+=>
+    (if (<= ?x 16.19)
+        then
+        (printout t "Hasil Prediksi = Terprediksi Kanker Payudara" crlf)
+        (halt)
+        else
+        (assert (concave_point_error))
+    )
+)
+
+(defrule process_concave_point_error
+    (concave_point_error ?x)
+=>
+    (if (<= ?x 0.01)
+        then
+        (printout t "Hasil Prediksi = Tidak Terprediksi Kanker Payudara" crlf)
+        (halt)
+        else
+        (printout t "Hasil Prediksi = Terprediksi Kanker Payudara" crlf)
+        (halt)
+    )
+)
+
+(defrule process_radius_error
+    (radius_error ?x)
+=>
+    (if (<= ?x 0.63)
+        then
+        (assert (texture_worst))
+        else
+        (assert (smoothness_mean))
+    )
+)
+
+(defrule process_smoothness_mean
+    (smoothness_mean ?x)
+=>
+    (if (<= ?x 0.09)
+        then
+        (printout t "Hasil Prediksi = Terprediksi Kanker Payudara" crlf)
+        (halt)
+        else
+        (printout t "Hasil Prediksi = Tidak Terprediksi Kanker Payudara" crlf)
+        (halt)
+    )
+)
+
+(defrule process_left_texture_worst
+    (texture_worst ?x)
+    (left_branch)
+=>
+    (if (<= ?x 30.15)
+        then
+        (printout t "Hasil Prediksi = Terprediksi Kanker Payudara" crlf)
+        (halt)
+        else
+        (assert (area_worst))
+    )
+)
+
+(defrule process_area_worst
+    (area_worst ?x)
+=>
+    (if (<= ?x 641.60)
+        then
+        (printout t "Hasil Prediksi = Terprediksi Kanker Payudara" crlf)
+        (halt)
+        else
+        (assert (radius_mean))
+    )
+)
+
+(defrule process_left_radius_mean
+    (radius_mean ?x)
+    (left_branch)
+=>
+    (if (<= ?x 13.45)
+        then
+        (assert (texture_mean))
+        else
+        (printout t "Hasil Prediksi = Terprediksi Kanker Payudara" crlf)
+        (halt)
+    )
+)
+
+(defrule process_left_texture_mean
+    (texture_mean ?x)
+    (left_texture)
+=>
+    (if (<= ?x 28.79)
+        then
+        (printout t "Hasil Prediksi = Tidak Terprediksi Kanker Payudara" crlf)
+        (halt)
+        else
+        (printout t "Hasil Prediksi = Terprediksi Kanker Payudara" crlf)
+        (halt)
+    )
+)
+
+(defrule process_worst_perimeter
+    (worst_perimeter ?x)
+=>
+    (if (<= ?x 114.45)
+        then
+        (assert (texture_worst))
+        else
+        (printout t "Hasil Prediksi = Tidak Terprediksi Kanker Payudara" crlf)
+        (halt)
+    )
+)
+
+(defrule process_texture_worst_right_branch
+    (texture_worst ?x)
+    (right_branch)
+=>
+    (if (> ?x 25.65)
+        then
+        (assert (perimeter_error))
+        else
+        (assert (concave_point_worst))
+    )
+)
+
+(defrule process_concave_point_worst
+    (concave_points_worst ?x)
+=>
+    (if (> ?x 0.17)
+        then
+        (printout t "Hasil Prediksi = Tidak Terprediksi Kanker Payudara" crlf)
+        (halt)
+        else
+        (printout t "Hasil Prediksi = Terprediksi Kanker Payudara" crlf)
+        (halt)
+    )
+)
+
+(defrule process_perimeter_error
+    (perimeter_error ?x)
+=>
+    (if (> ?x 1.56)
+        then
+        (printout t "Hasil Prediksi = Tidak Terprediksi Kanker Payudara" crlf)
+        (halt)
+        else
+        (assert (radius_mean))
+    )
+)
+
+(defrule process_radius_mean_right_branch
+    (radius_mean ?x)
+    (right_branch)
+=>
+    (if (> ?x 13.34)
+        then
+        (printout t "Hasil Prediksi = Terprediksi Kanker Payudara" crlf)
+        (halt)
+        else
+        (printout t "Hasil Prediksi = Tidak Terprediksi Kanker Payudara" crlf)
+        (halt)
+    )
 )
